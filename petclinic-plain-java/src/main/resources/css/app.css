@@ -1,0 +1,86 @@
+body {
+  font-family: sans;
+  margin: 0;
+}
+main {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1320px;
+}
+nav {
+  background-color: black;
+  padding: 5px;
+  display: flex;
+}
+nav > div.branding {
+    flex-grow: 2;
+    font-size: 130%;
+    margin: auto;
+}
+nav > div.branding a {
+    color: white;
+    text-decoration: none;
+}
+
+nav ul {
+  list-style: none;
+}
+nav ul li {
+  display: inline;
+  margin: 5px;
+}
+nav ul li a {
+  color: #838789;
+  text-decoration: none;
+  border: 1px black solid;
+  padding: 5px;
+  text-transform: uppercase;
+}
+nav ul li a.active {
+  color: white;
+}
+nav ul li a:hover {
+  background-color: #6db33f;
+}
+
+
+form input {
+    width: 100%;
+}
+button, a.btn {
+    border: 2px solid #62b33f;
+    color: #f1f1f1;
+    background: #34302d;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    text-decoration: none;
+    padding: 0.375rem 0.75rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+table thead tr th {
+    background-color: #3c3834;
+    color: #f1f1f1;
+}
+table > * > tr > * {
+    padding: 0.5rem 0.5rem;
+    border-bottom: 1px solid rgb(222, 226, 230);
+}
+table > tbody > tr > td {
+    background-color: white;
+    color: black;
+}
+table > tbody > tr:nth-of-type(2n+1) > td {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+dl dt {
+    font-weight: bolder;
+}
+dl dd {
+    margin-bottom: .5rem;
+    margin-left: 0;
+}
