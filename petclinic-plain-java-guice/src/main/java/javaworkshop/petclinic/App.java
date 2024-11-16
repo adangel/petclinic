@@ -27,6 +27,8 @@ import java.util.stream.Stream;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
@@ -53,7 +55,7 @@ public class App {
         httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), port), 0);
 
-        ApplicationContext applicationContext = new ApplicationContext();
+        Injector injector = Guice.createInjector(new ApplicationModule());
 
         HttpContext context = httpServer.createContext("/", new HttpHandler() {
             @Override
@@ -70,11 +72,11 @@ public class App {
                         if (!matcher.matches()) {
                             throw new IllegalStateException("invalid request path");
                         }
-                        handleController(exchange, () -> applicationContext.getBean(OwnerController.class).getOwnerById(Integer.parseInt(matcher.group(1))));
+                        handleController(exchange, () -> injector.getInstance(OwnerController.class).getOwnerById(Integer.parseInt(matcher.group(1))));
                         return;
                     }
                     if (get && requestPath.matches("^/owners$")) {
-                        handleController(exchange, () -> applicationContext.getBean(OwnerController.class).findOwners(exchange.getRequestURI().getQuery()));
+                        handleController(exchange, () -> injector.getInstance(OwnerController.class).findOwners(exchange.getRequestURI().getQuery()));
                         return;
                     }
                     if (post && requestPath.matches("^/owners/\\d+/edit$")) {
@@ -84,13 +86,13 @@ public class App {
                         }
                         int ownerId = Integer.parseInt(matcher.group(1));
                         JSONObject data = new JSONObject(new JSONTokener(exchange.getRequestBody()));
-                        handleController(exchange, () -> applicationContext.getBean(OwnerController.class).saveOwner(ownerId, data), "/owners/%d".formatted(ownerId));
+                        handleController(exchange, () -> injector.getInstance(OwnerController.class).saveOwner(ownerId, data), "/owners/%d".formatted(ownerId));
                         return;
                     }
                     if (post && requestPath.matches("^/owners/new$")) {
                         JSONObject data = new JSONObject(new JSONTokener(exchange.getRequestBody()));
-                        Owner newOwner = applicationContext.getBean(OwnerController.class).newOwner(data);
-                        handleController(exchange, () -> applicationContext.getBean(OwnerController.class).getOwnerById(newOwner.getId()), "/owners/%d".formatted(newOwner.getId()));
+                        Owner newOwner = injector.getInstance(OwnerController.class).newOwner(data);
+                        handleController(exchange, () -> injector.getInstance(OwnerController.class).getOwnerById(newOwner.getId()), "/owners/%d".formatted(newOwner.getId()));
                         return;
                     }
                 }
