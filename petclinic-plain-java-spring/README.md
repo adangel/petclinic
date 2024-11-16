@@ -7,6 +7,9 @@ written in plain Java with [Spring Framework](https://spring.io/projects/spring-
 
 * Learn about what Java is capable of without Spring
 * Learn about Inversion of Control (IoC) / Dependency Injection
+  * We only use the core technology "dependency injection" from Spring
+  * We use the XML-based configuration: `beans.xml`
+  * Supported scopes are singleton (default) and prototype - see ownerController.
 
 ## Non-Goals
 

@@ -26,6 +26,8 @@ import java.util.stream.Stream;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpContext;
@@ -53,7 +55,7 @@ public class App {
         httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), port), 0);
 
-        ApplicationContext applicationContext = new ApplicationContext();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("beans.xml");
 
         HttpContext context = httpServer.createContext("/", new HttpHandler() {
             @Override
