@@ -2,10 +2,20 @@ package javaworkshop.petclinic.data;
 
 import java.util.List;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
+@ApplicationScoped
 public class OwnerRepository {
     private final Database database;
 
-    public OwnerRepository(Database database) {
+    OwnerRepository() {
+        this.database = null;
+    }
+
+    @Inject
+    public OwnerRepository(@Named("instance") Database database) {
         this.database = database;
     }
 

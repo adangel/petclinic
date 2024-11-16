@@ -32,6 +32,8 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import io.quarkus.arc.Arc;
+import io.quarkus.arc.ArcContainer;
 import javaworkshop.petclinic.data.Owner;
 import javaworkshop.petclinic.web.OwnerController;
 
@@ -53,7 +55,8 @@ public class App {
         httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), port), 0);
 
-        ApplicationContext applicationContext = new ApplicationContext();
+        SetupArc.init(devMode, devModeBasePath);
+        ArcContainer container = Arc.initialize();
 
         HttpContext context = httpServer.createContext("/", new HttpHandler() {
             @Override
@@ -70,11 +73,11 @@ public class App {
                         if (!matcher.matches()) {
                             throw new IllegalStateException("invalid request path");
                         }
-                        handleController(exchange, () -> applicationContext.getBean(OwnerController.class).getOwnerById(Integer.parseInt(matcher.group(1))));
+                        handleController(exchange, () -> container.instance(OwnerController.class).get().getOwnerById(Integer.parseInt(matcher.group(1))));
                         return;
                     }
                     if (get && requestPath.matches("^/owners$")) {
-                        handleController(exchange, () -> applicationContext.getBean(OwnerController.class).findOwners(exchange.getRequestURI().getQuery()));
+                        handleController(exchange, () -> container.instance(OwnerController.class).get().findOwners(exchange.getRequestURI().getQuery()));
                         return;
                     }
                     if (post && requestPath.matches("^/owners/\\d+/edit$")) {
@@ -84,13 +87,13 @@ public class App {
                         }
                         int ownerId = Integer.parseInt(matcher.group(1));
                         JSONObject data = new JSONObject(new JSONTokener(exchange.getRequestBody()));
-                        handleController(exchange, () -> applicationContext.getBean(OwnerController.class).saveOwner(ownerId, data), "/owners/%d".formatted(ownerId));
+                        handleController(exchange, () -> container.instance(OwnerController.class).get().saveOwner(ownerId, data), "/owners/%d".formatted(ownerId));
                         return;
                     }
                     if (post && requestPath.matches("^/owners/new$")) {
                         JSONObject data = new JSONObject(new JSONTokener(exchange.getRequestBody()));
-                        Owner newOwner = applicationContext.getBean(OwnerController.class).newOwner(data);
-                        handleController(exchange, () -> applicationContext.getBean(OwnerController.class).getOwnerById(newOwner.getId()), "/owners/%d".formatted(newOwner.getId()));
+                        Owner newOwner = container.instance(OwnerController.class).get().newOwner(data);
+                        handleController(exchange, () -> container.instance(OwnerController.class).get().getOwnerById(newOwner.getId()), "/owners/%d".formatted(newOwner.getId()));
                         return;
                     }
                 }

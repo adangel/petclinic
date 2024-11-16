@@ -4,12 +4,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import javaworkshop.petclinic.data.Owner;
 import javaworkshop.petclinic.data.OwnerRepository;
 
+@ApplicationScoped
 public class OwnerService {
     private final OwnerRepository repository;
 
+    OwnerService() {
+        this.repository = null;
+    }
+
+    @Inject
     public OwnerService(OwnerRepository repository) {
         this.repository = repository;
     }
