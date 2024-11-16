@@ -9,20 +9,26 @@ import java.util.stream.Collectors;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import javaworkshop.petclinic.data.Owner;
 import javaworkshop.petclinic.data.Pet;
 import javaworkshop.petclinic.service.OwnerService;
 
+@Named
+//@org.springframework.context.annotation.Scope("prototype") // note: Spring annotation!
 public class OwnerController {
     private final OwnerService ownerService;
     private String defaultFirstName = "Jon";
     private int counter; // instance field is shared for singletons...
 
+    @Inject
     public OwnerController(OwnerService ownerService) {
         this.ownerService = ownerService;
     }
 
-    public void setDefaultFirstName(String defaultFirstName) {
+    @Inject
+    public void setDefaultFirstName(@Named("defaultFirstName") String defaultFirstName) {
         this.defaultFirstName = defaultFirstName;
     }
 

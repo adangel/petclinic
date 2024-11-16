@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.sun.net.httpserver.Filter;
@@ -55,7 +56,7 @@ public class App {
         httpServer = HttpServer.create();
         httpServer.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), port), 0);
 
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("beans.xml");
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
 
         HttpContext context = httpServer.createContext("/", new HttpHandler() {
             @Override
@@ -177,7 +178,7 @@ public class App {
         final boolean devMode;
         if (developmentMode) {
             Path pathToIndexHtml = Paths.get("src", "main", "resources", "html", "index.html");
-            devModeBasePath = Stream.of(Paths.get("petclinic-plain-java-spring").resolve(pathToIndexHtml), pathToIndexHtml)
+            devModeBasePath = Stream.of(Paths.get("petclinic-plain-java-spring-annotated").resolve(pathToIndexHtml), pathToIndexHtml)
                     .filter(Files::exists)
                     .findFirst()
                     .map(p -> p.getParent().getParent()) // select ...src/main/resources
