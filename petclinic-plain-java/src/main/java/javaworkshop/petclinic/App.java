@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -157,10 +158,12 @@ public class App {
                 thrown = s.toString();
             }
 
+            String message = MessageFormat.format(record.getMessage(), record.getParameters());
+
             return String.format("%s - %s: %s%s%n",
                     logLevel,
                     loggerName,
-                    record.getMessage(),
+                    message,
                     thrown);
         }
     }
