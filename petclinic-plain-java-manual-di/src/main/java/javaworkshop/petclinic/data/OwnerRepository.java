@@ -3,15 +3,21 @@ package javaworkshop.petclinic.data;
 import java.util.List;
 
 public class OwnerRepository {
+    private final Database database;
+
+    public OwnerRepository(Database database) {
+        this.database = database;
+    }
+
     public Owner findById(Integer id) {
-        return Database.getInstance().getOwnerById(id);
+        return database.getOwnerById(id);
     }
 
     public List<Owner> findAll() {
-        return Database.getInstance().getAllOwners();
+        return database.getAllOwners();
     }
 
     public void create(Owner newOwner) {
-        Database.getInstance().createNewOwner(newOwner);
+        database.createNewOwner(newOwner);
     }
 }

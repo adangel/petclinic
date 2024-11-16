@@ -8,7 +8,11 @@ import javaworkshop.petclinic.data.Owner;
 import javaworkshop.petclinic.data.OwnerRepository;
 
 public class OwnerService {
-    private OwnerRepository repository = new OwnerRepository();
+    private final OwnerRepository repository;
+
+    public OwnerService(OwnerRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Owner> searchOwners(Optional<String> lastName) {
         List<Owner> all = repository.findAll();

@@ -14,7 +14,17 @@ import javaworkshop.petclinic.data.Pet;
 import javaworkshop.petclinic.service.OwnerService;
 
 public class OwnerController {
-    private OwnerService ownerService = new OwnerService();
+    private final OwnerService ownerService;
+    private String defaultFirstName = "Jon";
+    private int counter; // instance field is shared for singletons...
+
+    public OwnerController(OwnerService ownerService) {
+        this.ownerService = ownerService;
+    }
+
+    public void setDefaultFirstName(String defaultFirstName) {
+        this.defaultFirstName = defaultFirstName;
+    }
 
     public String findOwners(String query) {
         Optional<String> lastName = Optional.empty();
@@ -54,7 +64,13 @@ public class OwnerController {
 
     public String getOwnerById(Integer id) {
         Owner owner = ownerService.getOwnerById(id);
-        return owner != null ? convertOwnerToJson(owner) : null;
+        if (owner == null) {
+            return null;
+        }
+
+        counter++;
+        owner.setCity("Request Count: " + counter);
+        return convertOwnerToJson(owner);
     }
 
     public String saveOwner(int ownerId, JSONObject data) {
@@ -62,6 +78,7 @@ public class OwnerController {
         if (owner == null) {
             throw new RuntimeException("Owner 1 not found");
         }
+
         owner.setFirstName(data.getString("firstName"));
         owner.setLastName(data.getString("lastName"));
         owner.setAddress(data.getString("address"));
@@ -73,8 +90,13 @@ public class OwnerController {
     }
 
     public Owner newOwner(JSONObject data) {
+        String firstName = data.getString("firstName");
+        if (firstName == null || firstName.isBlank()) {
+            firstName = defaultFirstName;
+        }
+
         Owner newOwner = new Owner();
-        newOwner.setFirstName(data.getString("firstName"));
+        newOwner.setFirstName(firstName);
         newOwner.setLastName(data.getString("lastName"));
         newOwner.setAddress(data.getString("address"));
         newOwner.setCity(data.getString("city"));
