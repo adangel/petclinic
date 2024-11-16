@@ -177,7 +177,7 @@ public class App {
         final boolean devMode;
         if (developmentMode) {
             Path pathToIndexHtml = Paths.get("src", "main", "resources", "html", "index.html");
-            devModeBasePath = Stream.of(Paths.get("petclinic-plain-java-spring").resolve(pathToIndexHtml), pathToIndexHtml)
+            devModeBasePath = Stream.of(Paths.get("petclinic-plain-java-spring-xml").resolve(pathToIndexHtml), pathToIndexHtml)
                     .filter(Files::exists)
                     .findFirst()
                     .map(p -> p.getParent().getParent()) // select ...src/main/resources
