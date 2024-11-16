@@ -12,3 +12,5 @@ These are not examples of how a modern WebApp should be built. It's only for lea
   [Spring Framework](https://spring.io/projects/spring-framework) for dependency injection using XML.
 * [petclinic-plain-java-spring-annotated](petclinic-plain-java-spring-annotated) - written in plain java with
   [Spring Framework](https://spring.io/projects/spring-framework) for dependency injection using annotations.
+* [petclinic-plain-java-quarkus-di-only](petclinic-plain-java-quarkus-di-only) - written in plain java with
+  [Quarkus](https://quarkus.io) for dependency injection only.
