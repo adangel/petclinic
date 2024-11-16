@@ -161,7 +161,10 @@ public class App {
                 thrown = s.toString();
             }
 
-            String message = MessageFormat.format(record.getMessage(), record.getParameters());
+            String message = record.getMessage();
+            if (record.getParameters() != null) {
+                message = MessageFormat.format(record.getMessage(), record.getParameters());
+            }
 
             return String.format("%s - %s: %s%s%n",
                     logLevel,
