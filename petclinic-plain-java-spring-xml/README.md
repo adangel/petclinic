@@ -1,4 +1,4 @@
-# Pet Clinic with plain java and Spring for DI
+# Pet Clinic with plain java and Spring XML for DI
 
 Sample application [Pet Clinic](https://spring-petclinic.github.io/) from spring, but
 written in plain Java with [Spring Framework](https://spring.io/projects/spring-framework) for DI.
