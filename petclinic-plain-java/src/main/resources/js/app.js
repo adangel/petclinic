@@ -3,7 +3,12 @@ addEventListener("load", (event) => {
     let nav = document.getElementsByClassName("nav");
 
     function displayPath(path) {
-        if (path === '/owners/find') {
+        if (path === "/") {
+            main.innerHTML = `
+                <h3>Home</h3>
+                Welcome...
+            `;
+        } else if (path === '/owners/find') {
             main.innerHTML = `
                 <h3>Find Owner</h3>
                 <form action="/owners" method="get">
@@ -139,11 +144,6 @@ addEventListener("load", (event) => {
         } else if (path === "/vets") {
             main.innerHTML = `
                 <h3>Veterinarians</h3>
-            `;
-        } else if (path === "/") {
-            main.innerHTML = `
-                <h3>Home</h3>
-                Welcome...
             `;
         } else {
             main.innerHTML = `

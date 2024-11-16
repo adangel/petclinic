@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class Database {
+public final class Database {
     private final static Database INSTANCE = new Database();
     public static Database getInstance() {
         return INSTANCE;
