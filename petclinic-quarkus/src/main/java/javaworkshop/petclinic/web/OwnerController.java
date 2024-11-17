@@ -1,68 +1,44 @@
 package javaworkshop.petclinic.web;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import org.json.JSONObject;
-import org.json.JSONWriter;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.resteasy.reactive.RestPath;
+import org.jboss.resteasy.reactive.RestQuery;
+import org.jboss.resteasy.reactive.RestResponse;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import javaworkshop.petclinic.data.Owner;
-import javaworkshop.petclinic.data.Pet;
 import javaworkshop.petclinic.service.OwnerService;
 
+@Path("/owners")
+@Produces(MediaType.APPLICATION_JSON)
+@ApplicationScoped
+//@jakarta.enterprise.context.RequestScoped
 public class OwnerController {
     private final OwnerService ownerService;
+    @ConfigProperty(name = "defaultFirstName") // see application.properties
     private String defaultFirstName = "Jon";
-    private int counter; // instance field is shared for singletons...
+    private int counter; // instance field is shared for singletons (application scoped)...
 
     public OwnerController(OwnerService ownerService) {
         this.ownerService = ownerService;
     }
 
-    public void setDefaultFirstName(String defaultFirstName) {
-        this.defaultFirstName = defaultFirstName;
-    }
-
-    public String findOwners(String query) {
-        Optional<String> lastName = Optional.empty();
-        Pattern pattern = Pattern.compile("lastName=(.+)");
-        Matcher matcher = pattern.matcher(query);
-        if (matcher.find()) {
-            lastName = Optional.of(matcher.group(1));
-        }
-
+    @GET
+    public List<Owner> findOwners(@RestQuery String lastName) {
         List<Owner> all = ownerService.searchOwners(lastName);
-        String result = all.stream().map(OwnerController::convertOwnerToJson).collect(Collectors.joining(","));
-        return "[" + result + "]";
+        return all;
     }
 
-    private static String convertOwnerToJson(Owner owner) {
-        StringBuilder result = new StringBuilder();
-        JSONWriter jsonWriter = new JSONWriter(result);
-        jsonWriter.object();
-        jsonWriter.key("id").value(owner.getId());
-        jsonWriter.key("firstName").value(owner.getFirstName());
-        jsonWriter.key("lastName").value(owner.getLastName());
-        jsonWriter.key("address").value(owner.getAddress());
-        jsonWriter.key("city").value(owner.getCity());
-        jsonWriter.key("telephone").value(owner.getTelephone());
-        jsonWriter.key("pets").array();
-        for (Pet pet : owner.getPets()) {
-            jsonWriter.object()
-                    .key("name").value(pet.getName())
-                    .key("birthDate").value(pet.getBirthDate())
-                    .key("type").value(pet.getPetType().getName())
-                    .endObject();
-        }
-        jsonWriter.endArray();
-        jsonWriter.endObject();
-        return result.toString();
-    }
-
-    public String getOwnerById(Integer id) {
+    @GET
+    @Path("/{id}")
+    public Owner getOwnerById(@RestPath Integer id) {
         Owner owner = ownerService.getOwnerById(id);
         if (owner == null) {
             return null;
@@ -70,38 +46,41 @@ public class OwnerController {
 
         counter++;
         owner.setCity("Request Count: " + counter);
-        return convertOwnerToJson(owner);
+        return owner;
     }
 
-    public String saveOwner(int ownerId, JSONObject data) {
+    @POST
+    @Path("/{ownerId}/edit")
+    public RestResponse<Owner> saveOwner(@RestPath int ownerId, Owner modifiedOwner) {
         Owner owner = ownerService.getOwnerById(ownerId);
         if (owner == null) {
             throw new RuntimeException("Owner 1 not found");
         }
 
-        owner.setFirstName(data.getString("firstName"));
-        owner.setLastName(data.getString("lastName"));
-        owner.setAddress(data.getString("address"));
-        owner.setCity(data.getString("city"));
-        owner.setTelephone(data.getString("telephone"));
+        owner.setFirstName(modifiedOwner.getFirstName());
+        owner.setLastName(modifiedOwner.getLastName());
+        owner.setAddress(modifiedOwner.getAddress());
+        owner.setCity(modifiedOwner.getCity());
+        owner.setTelephone(modifiedOwner.getTelephone());
         ownerService.saveOwner(owner);
 
-        return convertOwnerToJson(owner);
+        return RestResponse.ResponseBuilder.ok(owner)
+                .header("X-Redirect-Path", "/owners/%d".formatted(ownerId))
+                .build();
     }
 
-    public Owner newOwner(JSONObject data) {
-        String firstName = data.getString("firstName");
+    @POST
+    @Path("/new")
+    public RestResponse<Owner> newOwner(Owner newOwner) {
+        String firstName = newOwner.getFirstName();
         if (firstName == null || firstName.isBlank()) {
             firstName = defaultFirstName;
+            newOwner.setFirstName(defaultFirstName);
         }
 
-        Owner newOwner = new Owner();
-        newOwner.setFirstName(firstName);
-        newOwner.setLastName(data.getString("lastName"));
-        newOwner.setAddress(data.getString("address"));
-        newOwner.setCity(data.getString("city"));
-        newOwner.setTelephone(data.getString("telephone"));
         ownerService.create(newOwner);
-        return newOwner;
+        return RestResponse.ResponseBuilder.ok(newOwner)
+                .header("X-Redirect-Path", "/owners/%d".formatted(newOwner.getId()))
+                .build();
     }
 }

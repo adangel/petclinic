@@ -3,16 +3,11 @@ package javaworkshop.petclinic.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import javaworkshop.petclinic.data.Database;
 import javaworkshop.petclinic.data.Owner;
 import javaworkshop.petclinic.data.OwnerRepository;
 
@@ -51,7 +46,7 @@ class OwnerServiceTest {
                 }
         );
 
-        List<Owner> list = service.searchOwners(Optional.of("Test"));
+        List<Owner> list = service.searchOwners("Test");
         assertEquals(1, list.size());
     }
 }

@@ -8,8 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
+
 public final class Database {
     private final static Database INSTANCE = new Database();
+    @Produces
+    @ApplicationScoped
+    @Named("instance")
     public static Database getInstance() {
         return INSTANCE;
     }

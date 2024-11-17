@@ -2,11 +2,12 @@ package javaworkshop.petclinic.service;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import javaworkshop.petclinic.data.Owner;
 import javaworkshop.petclinic.data.OwnerRepository;
 
+@ApplicationScoped
 public class OwnerService {
     private final OwnerRepository repository;
 
@@ -14,13 +15,9 @@ public class OwnerService {
         this.repository = repository;
     }
 
-    public List<Owner> searchOwners(Optional<String> lastName) {
+    public List<Owner> searchOwners(String lastName) {
         List<Owner> all = repository.findAll();
-
-        if (lastName.isPresent()) {
-            all = all.stream().filter(owner -> owner.getLastName().toLowerCase(Locale.ROOT).contains(lastName.get().toLowerCase(Locale.ROOT))).toList();
-        }
-
+        all = all.stream().filter(owner -> owner.getLastName().toLowerCase(Locale.ROOT).contains(lastName.toLowerCase(Locale.ROOT))).toList();
         return all;
     }
 
