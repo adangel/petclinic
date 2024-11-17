@@ -15,3 +15,4 @@ These are not examples of how a modern WebApp should be built. It's only for lea
 * [petclinic-plain-java-quarkus-di-only](petclinic-plain-java-quarkus-di-only) - written in plain java with
   [Quarkus](https://quarkus.io) for dependency injection only.
 * [petclinic-spring-boot](petclinic-spring-boot) - written with [Spring Boot](https://spring.io/projects/spring-boot).
+* [petclinic-quarkus](petclinic-quarkus) - written with [Quarkus](https://quarkus.io).
