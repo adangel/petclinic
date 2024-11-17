@@ -14,3 +14,4 @@ These are not examples of how a modern WebApp should be built. It's only for lea
   [Spring Framework](https://spring.io/projects/spring-framework) for dependency injection using annotations.
 * [petclinic-plain-java-quarkus-di-only](petclinic-plain-java-quarkus-di-only) - written in plain java with
   [Quarkus](https://quarkus.io) for dependency injection only.
+* [petclinic-spring-boot](petclinic-spring-boot) - written with [Spring Boot](https://spring.io/projects/spring-boot).
